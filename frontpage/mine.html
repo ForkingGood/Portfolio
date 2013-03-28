@@ -1,0 +1,168 @@
+<!;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>HTML5 canvas pie-like countdown</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width" />	
+	<style>
+		.canvasLayer {
+			position: absolute;
+			top: 0;
+			left: 0;
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body style="background:url(stripe_5676eb9211901744444201158e9a5849.png)" onload="init()">
+	<div id="all">
+		<canvas id="bgLayer" class="canvasLayer" height="500" width="800">
+			Sorry, it doesn't work for you.
+		</canvas>
+		<canvas id="cloud1Layer" class="canvasLayer" height="500" width="800"></canvas>
+		<canvas id="cloud2Layer" class="canvasLayer" height="500" width="800"></canvas>
+	</div>
+
+
+
+	<script type="text/javascript" charset="utf-8">
+		var bgObj = { img: null, x: 0, y: 0, w: 100, h: 100 };
+		var cloud1Obj = { img: null, x: 300, y: 0, w: 100, h: 100 };
+		var cloud2Obj = { img: null, x: 400, y: 0, w: 300, h: 200 };
+
+		function init() {
+			bgObj.img = new Image();
+			bgObj.img.src = 'bg.jpg';
+			bgObj.w = document.getElementById('bgLayer').offsetWidth;
+			bgObj.h = document.getElementById('bgLayer').offsetHeight;
+			bgObj.x = document.getElementById('bgLayer').offsetWidth * -1;
+			//drawBG();
+
+			slide('bgLayer', bgObj, 'horizontal', 0, null, 40, function() { alert('head'); });
+
+			cloud1Obj.img = new Image();
+			cloud1Obj.img.src = 'cloud.png';
+			cloud1Obj.y = cloud1Obj.h * -1;
+ 			slide('cloud1Layer', cloud1Obj, 'diagonal', 70, 70, 5); 
+			cloud2Obj.img = new Image();
+			cloud2Obj.img.src = 'cloud.png';
+			cloud2Obj.y = cloud2Obj.h * -1;
+ 			slide('cloud2Layer', cloud2Obj, 'vertical', null, 30, 5); 
+		}
+		
+		function slide(canvasID, imgObj, direction, toX, toY, speed, callback) {
+			var container = document.getElementById(canvasID);
+			var ctx = document.getElementById(canvasID).getContext("2d");
+
+			ctx.clearRect(0, 0, container.offsetWidth, container.offsetHeight);		//	Clear frame
+			ctx.drawImage(imgObj.img, imgObj.x, imgObj.y, imgObj.w, imgObj.h);		//	Display frame
+
+			//	Shift x & y for next frame, depending on direction and location of current and to point
+			var stayIn = true;
+			switch(direction.toLowerCase()) {
+				case 'horizontal':
+					if (imgObj.x < toX) {
+						// if (imgObj.x + 10 > toX){
+						// 	imgObj.x = toX;
+						// }
+						// else {
+						// 	imgObj.x += 10;
+						// }
+						imgObj.x += 60;
+					}
+					else if (imgObj.x > toX) {
+						if (imgObj.x - 10 < toX){
+							imgObj.x = toX;
+						}
+						else {
+							imgObj.x -= 10;
+						}
+					}
+					else {
+						stayIn = false;
+					}
+					break;
+				case 'vertical':
+					if (imgObj.y < toY) {
+						imgObj.y++;
+					}
+					else if (imgObj.y > toY) {
+						imgObj.y--;
+					}
+					else {
+						stayIn = false;
+					}
+					break;
+				case 'diagonal':
+					if (imgObj.x < toX) {
+						imgObj.x++;
+					}
+					else if (imgObj.x > toX) {
+						imgObj.x--;
+					}
+
+					if (imgObj.y < toY) {
+						imgObj.y++;
+					}
+					else if (imgObj.y > toY) {
+						imgObj.y--;
+					}
+
+					if (imgObj.y == toY && imgObj.x == toX) {
+						stayIn = false;
+					}
+					break;
+			}
+			//	if its not there yet, keep looping
+			if (stayIn) {
+				setTimeout(function() { slide(canvasID, imgObj, direction, toX, toY, speed); }, speed);
+			}
+			else {
+				alert('call now');
+				//if (callback != null) {
+					alert('call wanted');
+					//var returnObj = { x: imgObj.x, y: imgObj.y };
+					callback();
+				//}	
+				alert('calldone');
+			}
+		}
+
+
+		function drawBG() {
+			var ctx = document.getElementById('bgLayer').getContext("2d");
+			ctx.clearRect(0, 0, 800, 500);
+			ctx.drawImage(bgObj.img, bgObj.x, bgObj.y, bgObj.w, bgObj.h);
+			bgObj.x += 1;
+			if (bgObj.x < 0) {
+				setTimeout(function() {drawBG();}, 2);
+			}
+			else {
+				drawCloud1();
+			}
+		}
+
+		function drawCloud1() {
+			var ctx = document.getElementById('cloud1Layer').getContext("2d");
+			ctx.clearRect(0, 0, 800, 500);
+			ctx.drawImage(cloud1Obj.img, cloud1Obj.x, cloud1Obj.y, cloud1Obj.w, cloud1Obj.h);
+			cloud1Obj.y += 5;
+			if (cloud1Obj.y < 70) {
+				setTimeout(function() {drawCloud1();}, 20);
+			}
+			else {
+				drawCloud2();
+			}
+		}
+
+		function drawCloud2() {
+			var ctx = document.getElementById('cloud2Layer').getContext("2d");
+			ctx.clearRect(0, 0, 800, 500);
+			ctx.drawImage(cloud2Obj.img, cloud2Obj.x, cloud2Obj.y, cloud2Obj.w, cloud2Obj.h);
+			cloud2Obj.y += 3;
+			if (cloud2Obj.y < 30) {
+				setTimeout(function() {drawCloud2();}, 20);
+			}
+		}
+	</script>
+</body>
+</html>

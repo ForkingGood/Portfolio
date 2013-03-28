@@ -1,0 +1,2 @@
+- snap on menu if top near bar
+- resume doesn't load on refresh

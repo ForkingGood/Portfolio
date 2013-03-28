@@ -1,0 +1,138 @@
+<!;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>HTML5 canvas pie-like countdown</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width" />	
+	<style>
+		.canvasLayer {
+			position: absolute;
+			top: 0;
+			left: 0;
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body style="background:url(stripe_5676eb9211901744444201158e9a5849.png)" onload="init()">
+	<div id="all">
+		<canvas id="Layer1" class="canvasLayer" height="500" width="800">
+			Sorry, it doesn't work for you.
+		</canvas>
+	</div>
+
+
+
+	<script type="text/javascript" charset="utf-8">
+		var FPx, FPy, containerX, containerY;
+		function init() {
+			var container = document.getElementById('Layer1');
+			var ctx = document.getElementById('Layer1').getContext("2d");
+
+			FPx = container.width / 2;
+			FPy = container.height / 2;
+			containerX = container.width;
+			containerY = container.height;
+
+			ctx.beginPath();
+			ctx.moveTo(0, containerY);
+			ctx.lineTo(FPx, FPy);
+			ctx.stroke();
+
+			ctx.beginPath();
+			ctx.moveTo(containerX, containerY);
+			ctx.lineTo(FPx, FPy);
+			ctx.stroke();
+
+			ctx.beginPath();
+			ctx.moveTo(containerX, containerY - 20);
+			ctx.lineTo(FPx, FPy);
+			ctx.stroke();
+
+			ctx.beginPath();
+			ctx.moveTo(0, containerY - 20);
+			ctx.lineTo(FPx, FPy);
+			ctx.stroke();
+
+			ctx.beginPath();
+			ctx.moveTo(0, containerY - 90);
+			ctx.lineTo(FPx, FPy);
+			ctx.stroke();
+
+			ctx.beginPath();
+			ctx.moveTo(containerX, containerY - 90);
+			ctx.lineTo(FPx, FPy);
+			ctx.stroke();
+
+			ctx.moveTo(containerX + 10, containerY - 90);
+			ctx.fill(10, 10, 10);
+		}
+		
+		function slide(canvasID, imgObj, direction, toX, toY, speed, callback) {
+			var container = document.getElementById(canvasID);
+			var ctx = document.getElementById(canvasID).getContext("2d");
+
+			ctx.clearRect(0, 0, container.offsetWidth, container.offsetHeight);		//	Clear frame
+			ctx.drawImage(imgObj.img, imgObj.x, imgObj.y, imgObj.w, imgObj.h);		//	Display frame
+
+			//	Shift x & y for next frame, depending on direction and location of current and to point
+			var stayIn = true;
+			switch(direction.toLowerCase()) {
+				case 'horizontal':
+					if (imgObj.x < toX) {
+						imgObj.x++;
+					}
+					else if (imgObj.x > toX) {
+						imgObj.x--;
+					}
+					else {
+						stayIn = false;
+					}
+					break;
+				case 'vertical':
+					if (imgObj.y < toY) {
+						imgObj.y++;
+					}
+					else if (imgObj.y > toY) {
+						imgObj.y--;
+					}
+					else {
+						stayIn = false;
+					}
+					break;
+				case 'diagonal':
+					if (imgObj.x < toX) {
+						imgObj.x++;
+					}
+					else if (imgObj.x > toX) {
+						imgObj.x--;
+					}
+
+					if (imgObj.y < toY) {
+						imgObj.y++;
+					}
+					else if (imgObj.y > toY) {
+						imgObj.y--;
+					}
+
+					if (imgObj.y == toY && imgObj.x == toX) {
+						stayIn = false;
+					}
+					break;
+			}
+
+			//	if its not there yet, keep looping
+			if (stayIn) {
+				setTimeout(function() { slide(canvasID, imgObj, direction, toX, toY, speed); }, speed);
+			}
+			else {
+				alert('call now');
+				if (callback != null) {
+					alert('call wanted');
+					callback();
+				}	
+				alert('calldone');
+			}
+		}
+	</script>
+</body>
+</html>
